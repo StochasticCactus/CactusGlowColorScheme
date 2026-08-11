@@ -296,6 +296,16 @@ augroup CactusGlowCSyntax
     " Arrow method calls: match ->method_name(
     autocmd FileType c,cpp syntax match cArrowMethod /->\<\w\+\s*(/me=e-1
     autocmd FileType c,cpp execute "hi cArrowMethod guifg=" . s:hot_orange
+    " Arithmetic operators: +, -, * in pink. Deliberately excludes "/" —
+    " matching "/" here would collide with the two-char start of "//" and
+    " "/*" comments and, since this rule is defined after the base C
+    " syntax, it would win that tie and stop comments from being
+    " recognized at all on that line. "contained containedin=ALLBUT,..."
+    " keeps this rule out of comments and strings so it never repaints
+    " them.
+    autocmd FileType c,cpp syntax match cArithOp /[+\-*]/ contained
+                \ containedin=ALLBUT,cComment,cCommentL,cCommentStart,cCommentString,cComment2String,cCppComment,cCppComment2,cString,cCppString,cCharacter
+    autocmd FileType c,cpp execute "hi cArithOp guifg=" . s:pink
     " Standard library I/O objects: cout, cin, cerr, clog, endl, etc.
     autocmd FileType cpp syntax keyword cppStdObject cout cin cerr clog endl flush
                 \ setw setfill setprecision boolalpha noboolalpha hex dec oct
