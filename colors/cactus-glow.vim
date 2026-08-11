@@ -6,6 +6,12 @@
 "              and Bash — with comprehensive syntax coverage.
 " Author:      CactusScheme
 " License:     MIT
+" Revision:    v1.1 — rebalanced palette: function-calls-via-paren now gold
+"              (was wrongly green), namespaces/flags gained cyan,
+"              booleans/null moved to pink, and a PascalCase heuristic
+"              adds blue type names.
+" Revision:    v1.2 — strings/characters moved back onto green (v1.1 had
+"              pushed them to icy blue, leaving the scheme too blue-heavy).
 " =============================================================================
 
 hi clear
@@ -35,15 +41,15 @@ let s:line_nr     = "#5a534a"
 let s:line_nr_cur = "#a89c8c"
 
 " Core syntax accent colors
-let s:pink        = "#F92672"   " Keywords, control flow          (Monokai DNA)
-let s:green       = "#A6E22E"   " Function definitions            (Monokai DNA)
-let s:purple      = "#AE81FF"   " Numbers, constants, booleans    (Monokai DNA)
+let s:pink        = "#F92672"   " Keywords, control flow, booleans/null (Monokai DNA)
+let s:green       = "#42f56f"   " Function definitions            (Monokai DNA)
+let s:purple      = "#AE81FF"   " Numbers, constants              (Monokai DNA)
 let s:yellow      = "#FABD2F"   " Types (int, integer, real...)   (Gruvbox DNA)
 let s:amber       = "#E6B450"   " Built-in constants, decorators  (Firefly DNA)
 let s:orange      = "#FD971F"   " Storage classes, identifiers    (Monokai DNA)
-let s:lime        = "#C2D94C"   " Strings                         (Firefly DNA)
-let s:cyan        = "#56D4C8"   " Preprocessor #include           (NEW — catchy!)
-let s:sky_blue    = "#59C2FF"   " Entity/class/struct names       (Firefly DNA)
+let s:frost       = "#6CB8E8"   " Icy blue accent (kept for a couple of UI bits)
+let s:cyan        = "#56D4C8"   " Preprocessor, namespaces, flags (NEW — catchy!)
+let s:sky_blue    = "#59C2FF"   " Class/struct/type names, +heuristic PascalCase (Firefly DNA)
 let s:coral       = "#F07178"   " Member variables, errors        (Firefly DNA)
 let s:magenta     = "#FF0077"   " Library/built-in functions      (NEW — vibrant!)
 let s:teal        = "#95E6CB"   " Escape chars, regex, specials   (Firefly DNA)
@@ -108,7 +114,7 @@ call s:hi("MatchParen",   s:bg,       s:gold,         "bold")
 call s:hi("StatusLine",   s:fg_alt,   s:bg_hl)
 call s:hi("StatusLineNC", s:fg_dim,   s:bg_dim)
 call s:hi("TabLine",      s:fg_dim,   s:bg_dim)
-call s:hi("TabLineSel",   s:lime,     s:bg_hl,        "bold")
+call s:hi("TabLineSel",   s:frost,     s:bg_hl,        "bold")
 call s:hi("TabLineFill",  "",         s:bg_alt)
 call s:hi("WildMenu",     s:bg,       s:cyan)
 call s:hi("Title",        s:gold,     "",             "bold")
@@ -120,7 +126,7 @@ call s:hi("PmenuSbar",    "",         s:bg_dim)
 call s:hi("PmenuThumb",   "",         s:fg_dim)
 
 " Messages & diagnostics
-call s:hi("ModeMsg",      s:lime,     "")
+call s:hi("ModeMsg",      s:frost,     "")
 call s:hi("MoreMsg",      s:green,    "")
 call s:hi("Question",     s:cyan,     "")
 call s:hi("WarningMsg",   s:warn,     "",             "bold")
@@ -158,9 +164,9 @@ call s:hi("SpecialComment", s:comment,    "",  "bold,italic")
 call s:hi("Constant",       s:purple,     "",  "bold")
 call s:hi("Number",         s:purple,     "")
 call s:hi("Float",          s:purple,     "")
-call s:hi("Boolean",        s:purple,     "")
-call s:hi("Character",      s:lime,       "")
-call s:hi("String",         s:lime,       "")
+call s:hi("Boolean",        s:pink,     "")
+call s:hi("Character",      s:green,       "")
+call s:hi("String",         s:green,       "")
 call s:hi("SpecialChar",    s:teal,       "",  "bold")
 
 " --- Identifiers ---
@@ -180,7 +186,7 @@ call s:hi("Keyword",        s:pink,       "",  "bold")
 call s:hi("Exception",      s:pink,       "",  "bold")
 
 " --- Namespace (std:: — the std part) ---
-call s:hi("Namespace",      s:orange,     "",  "bold")
+call s:hi("Namespace",      s:cyan,     "",  "bold")
 
 " --- Preprocessor ---
 call s:hi("PreProc",        s:cyan,       "")
@@ -237,9 +243,9 @@ call s:hi("cLabel",         s:yellow,     "")
 call s:hi("cOperator",      s:pink,       "")
 
 " C strings and numbers
-call s:hi("cString",        s:lime,       "")
-call s:hi("cCppString",     s:lime,       "")
-call s:hi("cCharacter",     s:lime,       "")
+call s:hi("cString",        s:green,       "")
+call s:hi("cCppString",     s:green,       "")
+call s:hi("cCharacter",     s:green,       "")
 call s:hi("cNumber",        s:purple,     "")
 call s:hi("cFloat",         s:purple,     "")
 call s:hi("cOctal",         s:purple,     "")
@@ -252,25 +258,38 @@ call s:hi("cppStatement",   s:pink,       "",  "bold")
 call s:hi("cppAccess",      s:pink,       "")
 call s:hi("cppModifier",    s:orange,     "",  "italic")
 call s:hi("cppStructure",   s:yellow,     "",  "bold")
-call s:hi("cppBoolean",     s:purple,     "")
+call s:hi("cppBoolean",     s:pink,     "")
 call s:hi("cppConstant",    s:amber,      "",  "bold")
 call s:hi("cppCast",        s:cyan,       "")
 call s:hi("cppOperator",    s:pink,       "")
 call s:hi("cppExceptions",  s:pink,       "",  "bold")
-call s:hi("cppRawString",   s:lime,       "")
+call s:hi("cppRawString",   s:green,       "")
 call s:hi("cppNumber",      s:purple,     "")
 
 " C/C++ custom function match (highlight calls like my_func(...))
 augroup CactusGlowCSyntax
     autocmd!
+    " Heuristic: PascalCase identifiers (uppercase start, has a lowercase
+    " letter somewhere so ALL_CAPS macros/constants are excluded) usually
+    " name a user-defined type or class — blue. Defined FIRST so the call/
+    " method matchers below still win where a pattern overlaps (e.g. a
+    " PascalCase constructor call like Rocket() still counts as a call).
+    autocmd FileType c,cpp syntax match cUserType /\<[A-Z]\w*\l\w*\>/
+    autocmd FileType c,cpp execute "hi cUserType guifg=" . s:sky_blue
+    " Generic word-before-paren match: this can't reliably tell a call
+    " from a definition via regex alone, so it now uses gold (the
+    " palette's dedicated "function calls" color) rather than green —
+    " green stays reserved for the definition-only matches other
+    " languages below (Function, pythonFunction, shFunction, etc.)
     autocmd FileType c,cpp syntax match cCustomFunc /\<\w\+\s*(/me=e-1
-    autocmd FileType c,cpp execute "hi cCustomFunc guifg=" . s:green
-    " Namespace: match std:: boost:: etc. — the part before ::
+    autocmd FileType c,cpp execute "hi cCustomFunc guifg=" . s:gold
+    " Namespace: match std:: boost:: etc. — the part before :: — now cyan,
+    " grouped with preprocessor/include as a "structural" cyan family
     autocmd FileType cpp syntax match cppNamespace /\<\w\+\ze::/
-    autocmd FileType cpp execute "hi cppNamespace guifg=" . s:orange . " gui=bold"
-    " Scope resolution :: itself — orange
+    autocmd FileType cpp execute "hi cppNamespace guifg=" . s:cyan . " gui=bold"
+    " Scope resolution :: itself — cyan
     autocmd FileType cpp syntax match cppScopeRes /::/
-    autocmd FileType cpp execute "hi cppScopeRes guifg=" . s:orange
+    autocmd FileType cpp execute "hi cppScopeRes guifg=" . s:cyan
     " Method calls: match .method_name( — the method part after dot
     autocmd FileType c,cpp syntax match cMethodCall /\.\<\w\+\s*(/me=e-1
     autocmd FileType c,cpp execute "hi cMethodCall guifg=" . s:hot_orange
@@ -333,15 +352,15 @@ call s:hi("fortranInclude",       s:cyan,       "",  "bold")
 call s:hi("fortranUseStatement",  s:cyan,       "",  "bold")
 
 " Strings, numbers, booleans
-call s:hi("fortranString",        s:lime,       "")
-call s:hi("fortranStringDelimit", s:lime,       "")
+call s:hi("fortranString",        s:green,       "")
+call s:hi("fortranStringDelimit", s:green,       "")
 call s:hi("fortranNumber",        s:purple,     "")
 call s:hi("fortranFloat",         s:purple,     "")
 call s:hi("fortranFloatIll",      s:purple,     "")
 call s:hi("fortranBinary",        s:purple,     "")
 call s:hi("fortranOctal",         s:purple,     "")
 call s:hi("fortranHex",           s:purple,     "")
-call s:hi("fortranBoolean",       s:purple,     "")
+call s:hi("fortranBoolean",       s:pink,     "")
 
 " implicit, save, intent, parameter, allocatable
 call s:hi("fortranStorageClass",        s:orange,  "",  "italic")
@@ -404,17 +423,17 @@ call s:hi("pythonSelf",         s:sky_blue,   "",  "italic")
 call s:hi("pythonClassVar",     s:sky_blue,   "",  "italic")
 
 " Constants
-call s:hi("pythonNone",         s:purple,     "")
-call s:hi("pythonBoolean",      s:purple,     "")
+call s:hi("pythonNone",         s:pink,     "")
+call s:hi("pythonBoolean",      s:pink,     "")
 call s:hi("pythonConstant",     s:purple,     "",  "bold")
 
 " Strings
-call s:hi("pythonString",       s:lime,       "")
-call s:hi("pythonRawString",    s:lime,       "")
-call s:hi("pythonQuotes",       s:lime,       "")
-call s:hi("pythonTripleQuotes", s:lime,       "")
+call s:hi("pythonString",       s:green,       "")
+call s:hi("pythonRawString",    s:green,       "")
+call s:hi("pythonQuotes",       s:green,       "")
+call s:hi("pythonTripleQuotes", s:green,       "")
 call s:hi("pythonEscape",       s:teal,       "",  "bold")
-call s:hi("pythonFString",      s:lime,       "")
+call s:hi("pythonFString",      s:green,       "")
 call s:hi("pythonStrFormat",    s:teal,       "")
 call s:hi("pythonStrFormatting",s:teal,       "")
 call s:hi("pythonStrTemplate",  s:teal,       "")
@@ -450,6 +469,10 @@ call s:hi("pythonSpaceError",   "",           s:diff_delete)
 " Python method calls (obj.method())
 augroup CactusGlowPySyntax
     autocmd!
+    " Heuristic: PascalCase identifiers are usually classes/types — blue.
+    " Defined first so the method-call match below still wins on overlap.
+    autocmd FileType python syntax match pythonUserType /\<[A-Z]\w*\l\w*\>/
+    autocmd FileType python execute "hi pythonUserType guifg=" . s:sky_blue
     autocmd FileType python syntax match pythonMethodCall /\.\<\w\+\s*(/me=e-1
     autocmd FileType python execute "hi pythonMethodCall guifg=" . s:hot_orange
 augroup END
@@ -467,7 +490,7 @@ call s:hi("shRepeat",         s:pink,       "",  "bold")
 call s:hi("shCaseBar",        s:pink,       "")
 call s:hi("shCaseIn",         s:pink,       "")
 call s:hi("shCaseCommandSub", s:pink,       "")
-call s:hi("shCaseExSingleQuote", s:lime,    "")
+call s:hi("shCaseExSingleQuote", s:green,    "")
 call s:hi("shCaseRange",      s:pink,       "")
 call s:hi("shKeyword",        s:pink,       "",  "bold")
 call s:hi("shIf",             s:pink,       "",  "bold")
@@ -504,11 +527,11 @@ call s:hi("shSheBang",        s:cyan,       "",  "bold,italic")
 call s:hi("shTodo",           s:bg,         s:gold,  "bold")
 
 " Strings
-call s:hi("shSingleQuote",    s:lime,       "")
-call s:hi("shDoubleQuote",    s:lime,       "")
-call s:hi("shQuote",          s:lime,       "")
-call s:hi("shString",         s:lime,       "")
-call s:hi("shEcho",           s:lime,       "")
+call s:hi("shSingleQuote",    s:green,       "")
+call s:hi("shDoubleQuote",    s:green,       "")
+call s:hi("shQuote",          s:green,       "")
+call s:hi("shString",         s:green,       "")
+call s:hi("shEcho",           s:green,       "")
 call s:hi("shEscape",         s:teal,       "",  "bold")
 
 " Operators / pipes / redirection
@@ -516,11 +539,11 @@ call s:hi("shOperator",       s:pink,       "")
 call s:hi("shArithmetic",     s:purple,     "")
 call s:hi("shNumber",         s:purple,     "")
 call s:hi("shTestOpr",        s:cyan,       "")
-call s:hi("shOption",         s:fg_alt,     "")
+call s:hi("shOption",         s:cyan,     "")
 call s:hi("shParen",          s:fg,         "")
 call s:hi("shRedir",          s:coral,      "",  "bold")
-call s:hi("shHereDoc",        s:lime,       "",  "italic")
-call s:hi("shHereString",     s:lime,       "")
+call s:hi("shHereDoc",        s:green,       "",  "italic")
+call s:hi("shHereString",     s:green,       "")
 
 " Glob / pattern
 call s:hi("shGlob",           s:teal,       "")
@@ -535,9 +558,9 @@ call s:hi("luaStatement",     s:pink,       "",  "bold")
 call s:hi("luaRepeat",        s:pink,       "",  "bold")
 call s:hi("luaCond",          s:pink,       "",  "bold")
 call s:hi("luaFunction",      s:green,      "")
-call s:hi("luaString",        s:lime,       "")
+call s:hi("luaString",        s:green,       "")
 call s:hi("luaNumber",        s:purple,     "")
-call s:hi("luaConstant",      s:purple,     "")
+call s:hi("luaConstant",      s:pink,     "")
 call s:hi("luaBuiltin",       s:magenta,    "")
 call s:hi("luaComment",       s:comment,    "",  "italic")
 call s:hi("luaTable",         s:sky_blue,   "")
@@ -556,7 +579,7 @@ call s:hi("cmakeKWadd_executable", s:cyan,  "",  "bold")
 call s:hi("cmakeKWadd_library", s:cyan,     "",  "bold")
 call s:hi("cmakeArguments",     s:fg,       "")
 call s:hi("cmakeVariable",     s:orange,    "")
-call s:hi("cmakeString",       s:lime,      "")
+call s:hi("cmakeString",       s:green,      "")
 call s:hi("cmakeComment",      s:comment,   "",  "italic")
 
 " --- Markdown ---
@@ -579,10 +602,10 @@ call s:hi("markdownBlockquote",    s:comment,   "",  "italic")
 
 " --- JSON ---
 call s:hi("jsonKeyword",       s:sky_blue,  "")
-call s:hi("jsonString",        s:lime,      "")
+call s:hi("jsonString",        s:green,      "")
 call s:hi("jsonNumber",        s:purple,    "")
-call s:hi("jsonBoolean",       s:purple,    "")
-call s:hi("jsonNull",          s:purple,    "")
+call s:hi("jsonBoolean",       s:pink,    "")
+call s:hi("jsonNull",          s:pink,    "")
 call s:hi("jsonBraces",        s:fg_alt,    "")
 
 " --- YAML ---
@@ -594,10 +617,10 @@ call s:hi("yamlBlockMappingKey", s:sky_blue, "")
 " --- TOML ---
 call s:hi("tomlTable",         s:sky_blue,  "",  "bold")
 call s:hi("tomlKey",           s:sky_blue,  "")
-call s:hi("tomlString",        s:lime,      "")
+call s:hi("tomlString",        s:green,      "")
 call s:hi("tomlInteger",       s:purple,    "")
 call s:hi("tomlFloat",         s:purple,    "")
-call s:hi("tomlBoolean",       s:purple,    "")
+call s:hi("tomlBoolean",       s:pink,    "")
 call s:hi("tomlDate",          s:teal,      "")
 
 " --- Git ---
@@ -611,7 +634,7 @@ call s:hi("vimCommand",       s:pink,       "",  "bold")
 call s:hi("vimVar",           s:orange,     "")
 call s:hi("vimFuncName",      s:green,      "")
 call s:hi("vimUserFunc",      s:green,      "")
-call s:hi("vimString",        s:lime,       "")
+call s:hi("vimString",        s:green,       "")
 call s:hi("vimNumber",        s:purple,     "")
 call s:hi("vimComment",       s:comment,    "",  "italic")
 call s:hi("vimOption",        s:yellow,     "")
@@ -688,8 +711,8 @@ if has('nvim')
     call s:hi("@include",               s:cyan,         "",  "bold")
 
     " Namespaces
-    call s:hi("@namespace",             s:orange,       "",  "bold")
-    call s:hi("@module",                s:orange,       "",  "bold")
+    call s:hi("@namespace",             s:cyan,       "",  "bold")
+    call s:hi("@module",                s:cyan,       "",  "bold")
 
     " Properties / Fields
     call s:hi("@property",              s:orange,       "")
@@ -713,7 +736,7 @@ if has('nvim')
     call s:hi("@lsp.type.method",       s:hot_orange,   "")
     call s:hi("@lsp.type.macro",        s:teal,         "",  "italic")
     call s:hi("@lsp.type.decorator",    s:amber,        "",  "italic")
-    call s:hi("@lsp.type.namespace",    s:orange,       "",  "bold")
+    call s:hi("@lsp.type.namespace",    s:cyan,       "",  "bold")
     call s:hi("@lsp.type.enumMember",   s:purple,       "")
     call s:hi("@lsp.type.typeParameter",s:yellow,       "",  "italic")
     call s:hi("@lsp.mod.deprecated",    s:fg_dim,       "",  "strikethrough")
@@ -733,7 +756,7 @@ call s:hi("CmpItemAbbr",          s:fg_alt,  "")
 call s:hi("CmpItemAbbrMatch",     s:cyan,    "",  "bold")
 call s:hi("CmpItemAbbrMatchFuzzy",s:cyan,    "")
 call s:hi("CmpItemKindFunction",  s:green,   "")
-call s:hi("CmpItemKindMethod",    s:green,   "")
+call s:hi("CmpItemKindMethod",    s:hot_orange,   "")
 call s:hi("CmpItemKindVariable",  s:orange,  "")
 call s:hi("CmpItemKindKeyword",   s:pink,    "")
 call s:hi("CmpItemKindText",      s:fg_dim,  "")
@@ -793,9 +816,9 @@ if &t_Co > 255
     hi Constant         ctermfg=141               cterm=bold
     hi Number           ctermfg=141
     hi Float            ctermfg=141
-    hi Boolean          ctermfg=141
-    hi String           ctermfg=149
-    hi Character        ctermfg=149
+    hi Boolean          ctermfg=197
+    hi String           ctermfg=118
+    hi Character        ctermfg=118
     hi SpecialChar      ctermfg=115               cterm=bold
     hi Identifier       ctermfg=180
     hi Function         ctermfg=118
@@ -866,11 +889,11 @@ if &t_Co > 255
     endif
 
     " Language-specific 256 fallbacks
-    hi cCustomFunc      ctermfg=118
+    hi cCustomFunc      ctermfg=214
     hi cMethodCall      ctermfg=208
     hi cArrowMethod     ctermfg=208
-    hi cppNamespace     ctermfg=208               cterm=bold
-    hi cppScopeRes      ctermfg=208
+    hi cppNamespace     ctermfg=80               cterm=bold
+    hi cppScopeRes      ctermfg=80
     hi cppStdObject     ctermfg=211               cterm=bold
     hi cppStdType       ctermfg=75
     hi shDeref          ctermfg=208               cterm=bold
